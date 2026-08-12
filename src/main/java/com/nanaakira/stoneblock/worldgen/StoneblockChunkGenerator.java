@@ -21,8 +21,8 @@ import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
-import net.minecraft.world.level.levelgen.carver.CarvingMask;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.chunk.CarvingMask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -110,10 +110,11 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
 
         ChunkPos chunkPos = chunkAccess.getPos();
         ProtoChunk protoChunk = (ProtoChunk) chunkAccess;
-        NoiseChunk noiseChunk = protoChunk.getOrCreateNoiseChunk((beardifier) ->
-                NoiseChunk.forChunk(chunkAccess, randomState, beardifier,
+        NoiseChunk noiseChunk = protoChunk.getOrCreateNoiseChunk((chunk) ->
+                NoiseChunk.forChunk(chunk, randomState,
+                        Beardifier.forStructuresInChunk(structureManager, chunk.getPos()),
                         this.generatorSettings().value(),
-                        (ctx, val) -> Blocks.AIR.defaultBlockState(),
+                        (x, y, z) -> new Aquifer.FluidStatus(0, Blocks.AIR.defaultBlockState()),
                         Blender.empty())
         );
         CarvingContext carvingContext = new StoneblockCarvingContext(this, region.registryAccess(),

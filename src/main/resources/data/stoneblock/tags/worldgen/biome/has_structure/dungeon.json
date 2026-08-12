@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:plains",
+    "minecraft:lush_caves",
+    "minecraft:nether_wastes",
+    "minecraft:the_end",
+    "minecraft:forest"
+  ]
+}

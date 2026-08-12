@@ -1,0 +1,13 @@
+{
+  "type": "stoneblock:dungeon_structure_feature",
+  "biomes": "#stoneblock:has_structure/dungeon",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "bury",
+  "start_pool": "stoneblock:dungeon_start",
+  "size": 7,
+  "min_height": -64,
+  "max_height": 128,
+  "min_structure_distance": 128,
+  "max_structure_distance": 3000
+}

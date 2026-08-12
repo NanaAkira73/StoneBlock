@@ -1,0 +1,7 @@
+{
+  "type": "stoneblock:start",
+  "biomes": "#stoneblock:has_structure/start",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}
