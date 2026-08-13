@@ -158,6 +158,11 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
     public void spawnOriginalMobs(WorldGenRegion region) {
     }
 
+    // 出生点空气口袋大小（在世界中心留出空间让玩家生成）
+    private static final int SPAWN_POCKET_HALF = 2;  // 半边长 (x, z)
+    private static final int SPAWN_POCKET_TOP = 2;    // 顶部 Y
+    private static final int SPAWN_POCKET_BOTTOM = -1; // 底部 Y
+
     @Override
     @NotNull
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
@@ -179,7 +184,15 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
                 int az = cz + z;
                 StoneBlockDataKjs config = StoneBlockDataKjs.getConfig(ax, az);
                 for (int y = minY; y < height; y++) {
-                    BlockState state = config.getState(ax, y, az);
+                    // 在世界中心 (0, 0, 0) 周围创建空气口袋，确保玩家有地方生成
+                    // 在 FTB Team Bases 放置基地结构之前，这里提供临时的生成空间
+                    boolean inSpawnPocket = Math.abs(ax) <= SPAWN_POCKET_HALF
+                            && Math.abs(az) <= SPAWN_POCKET_HALF
+                            && y >= SPAWN_POCKET_BOTTOM
+                            && y <= SPAWN_POCKET_TOP;
+                    BlockState state = inSpawnPocket
+                            ? Blocks.AIR.defaultBlockState()
+                            : config.getState(ax, y, az);
                     chunkAccess.setBlockState(mutableBlockPos.set(x, y, z), state, false);
                     heightmap1.update(x, y, z, state);
                     heightmap2.update(x, y, z, state);
