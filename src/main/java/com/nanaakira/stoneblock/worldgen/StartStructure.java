@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.StructureMode;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -43,31 +42,33 @@ public class StartStructure extends Structure {
             return Optional.empty();
         }
 
-        return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, builder -> {
-            StructureTemplateManager structureManager = context.structureTemplateManager();
-            ChunkPos chunkPos = context.chunkPos();
-            WorldgenRandom random = new WorldgenRandom(new LegacyRandomSource(0L));
-            random.setLargeFeatureSeed(context.seed(), chunkPos.x, chunkPos.z);
+        StructureTemplateManager structureManager = context.structureTemplateManager();
+        ChunkPos chunkPos = context.chunkPos();
+        WorldgenRandom random = new WorldgenRandom(new LegacyRandomSource(0L));
+        random.setLargeFeatureSeed(context.seed(), chunkPos.x, chunkPos.z);
 
-            PrebuiltStructure start = StoneBlockDataKjs.PREBUILT_STRUCTURES.get(
-                    stoneblockChunkGenerator.prebuiltStructure.toString());
-            if (start == null) {
-                LOGGER.warn("Unable to find [{}] in the prebuilt structure list",
-                        stoneblockChunkGenerator.prebuiltStructure);
-                return;
-            }
+        PrebuiltStructure start = StoneBlockDataKjs.PREBUILT_STRUCTURES.get(
+                stoneblockChunkGenerator.prebuiltStructure.toString());
+        if (start == null) {
+            LOGGER.warn("Unable to find [{}] in the prebuilt structure list",
+                    stoneblockChunkGenerator.prebuiltStructure);
+            return Optional.empty();
+        }
 
-            StructureTemplate template = structureManager.getOrCreate(start.id);
-            StructurePlaceSettings placeSettings = StartStructurePiece.makeSettings(template);
-            BlockPos spawnPos = locateSpawn(template, placeSettings);
+        StructureTemplate template = structureManager.getOrCreate(start.id);
+        StructurePlaceSettings placeSettings = StartStructurePiece.makeSettings(template);
+        BlockPos spawnPos = locateSpawn(template, placeSettings);
 
-            int px = -spawnPos.getX();
-            int py = -spawnPos.getY();
-            int pz = -spawnPos.getZ();
-            BlockPos blockPos = new BlockPos(px, py, pz);
+        // 使用固定 Y 位置（不再用 onTopOfChunkCenter），
+        // 让 spawn_point 恰好落在世界中心 y=0，确保玩家出生在基地内部地面上
+        int px = -spawnPos.getX();
+        int py = -spawnPos.getY();
+        int pz = -spawnPos.getZ();
+        BlockPos blockPos = new BlockPos(px, py, pz);
 
-            builder.addPiece(new StartStructurePiece(structureManager, start.id, blockPos, template));
-        });
+        return Optional.of(new GenerationStub(blockPos, piecesCollector -> {
+            piecesCollector.addPiece(new StartStructurePiece(structureManager, start.id, blockPos, template));
+        }));
     }
 
     @Override

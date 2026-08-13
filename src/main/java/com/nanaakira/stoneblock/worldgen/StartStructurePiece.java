@@ -58,6 +58,8 @@ public class StartStructurePiece extends TemplateStructurePiece {
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             level.getLevel().getServer().getGameRules().getRule(
                     net.minecraft.world.level.GameRules.RULE_SPAWN_RADIUS).set(0, level.getLevel().getServer());
+            // 将世界出生点设置为结构内的 spawn_point 位置，确保玩家出生在基地内部地面上
+            level.getLevel().setDefaultSpawnPos(pos, 0);
         }
     }
 

@@ -158,10 +158,11 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
     public void spawnOriginalMobs(WorldGenRegion region) {
     }
 
-    // 出生点空气口袋大小（在世界中心留出空间让玩家生成）
-    private static final int SPAWN_POCKET_HALF = 2;  // 半边长 (x, z)
-    private static final int SPAWN_POCKET_TOP = 2;    // 顶部 Y
-    private static final int SPAWN_POCKET_BOTTOM = -1; // 底部 Y
+    // 出生点空气口袋大小（在世界中心留出空间让玩家生成在基地内部）
+    // 基地结构是空心的，spawn_point 在 y=1~2，这个口袋确保实体生成有足够空间
+    private static final int SPAWN_POCKET_HALF = 3;   // 半边长 (x, z)，总共 7x7
+    private static final int SPAWN_POCKET_TOP = 4;     // 顶部 Y
+    private static final int SPAWN_POCKET_BOTTOM = -2;  // 底部 Y
 
     @Override
     @NotNull
