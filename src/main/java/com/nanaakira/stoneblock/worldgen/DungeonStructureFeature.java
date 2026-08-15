@@ -22,11 +22,11 @@ public class DungeonStructureFeature extends Structure {
     public static final Codec<DungeonStructureFeature> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             settingsCodec(instance),
             StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(s -> s.startPool),
-            Codec.intRange(0, 100).fieldOf("size").forGetter(s -> s.maxDepth),
-            Codec.intRange(-300, 300).fieldOf("min_height").forGetter(s -> s.minHeight),
-            Codec.intRange(-300, 300).fieldOf("max_height").forGetter(s -> s.maxHeight),
-            Codec.intRange(0, Integer.MAX_VALUE).fieldOf("min_structure_distance").forGetter(s -> s.minStructureDistance),
-            Codec.intRange(0, Integer.MAX_VALUE).fieldOf("max_structure_distance").forGetter(s -> s.maxStructureDistance)
+            Codec.intRange(0, 100).fieldOf("size").orElseGet(() -> 7).forGetter(s -> s.maxDepth),
+            Codec.intRange(-300, 300).fieldOf("min_height").orElseGet(() -> -300).forGetter(s -> s.minHeight),
+            Codec.intRange(-300, 300).fieldOf("max_height").orElseGet(() -> 300).forGetter(s -> s.maxHeight),
+            Codec.intRange(0, Integer.MAX_VALUE).fieldOf("min_structure_distance").orElseGet(() -> 0).forGetter(s -> s.minStructureDistance),
+            Codec.intRange(0, Integer.MAX_VALUE).fieldOf("max_structure_distance").orElseGet(() -> Integer.MAX_VALUE).forGetter(s -> s.maxStructureDistance)
     ).apply(instance, DungeonStructureFeature::new));
 
     private final Holder<StructureTemplatePool> startPool;
