@@ -38,6 +38,12 @@ public final class StoneBlockDataKjs {
     public static final int SIZE = 128;
     public static final int HEIGHT = SIZE * 2;
 
+    // 环形石头世界的圆心（方块坐标）。默认 (255, 255) 与 FTB Team Bases 的
+    // 共享基地维度区域中心对齐，让玩家选择的基地正好落在环形世界的几何中心。
+    // 可通过 KubeJS 脚本在 startup 阶段修改（例如 StoneblockData.centerX = 0）。
+    public static int centerX = 255;
+    public static int centerZ = 255;
+
     public static void reset() {
         PREBUILT_STRUCTURES.clear();
         BIOMES.clear();
@@ -81,7 +87,9 @@ public final class StoneBlockDataKjs {
     }
 
     public static StoneBlockDataKjs getConfig(int x, int z) {
-        int distance = (int) Math.sqrt(x * x + z * z);
+        int dx = x - centerX;
+        int dz = z - centerZ;
+        int distance = (int) Math.sqrt(dx * dx + dz * dz);
         StoneBlockDataKjs data = getConfig(distance);
         if (data.blend > 0) {
             int d = RANDOM_FACTORY.at(x, 0, z).nextInt(data.blend);
@@ -93,7 +101,7 @@ public final class StoneBlockDataKjs {
     }
 
     public static int getColor(ServerLevel level, BlockPos pos) {
-        if (pos.getX() == 0 && pos.getZ() == 0) {
+        if (pos.getX() == centerX && pos.getZ() == centerZ) {
             return 0xFF00FF00;
         }
         return getConfig(pos.getX(), pos.getZ()).biomeColor;
