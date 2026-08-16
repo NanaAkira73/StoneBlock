@@ -3,6 +3,7 @@ package com.nanaakira.stoneblock.worldgen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -13,7 +14,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +134,20 @@ public final class StoneBlockDataKjs {
 
     public static int getDefaultMaxDistance() {
         return Math.min(Mth.ceil(totalDistance * 1.1D), 10000);
+    }
+
+    /**
+     * Create a StoneblockChunkGenerator for FTB Team Bases' dynamic dimensions.
+     * Used by the mixin redirect so each team's private base dimension becomes
+     * an independent stone ring world.
+     */
+    public static ChunkGenerator createChunkGenerator(RegistryAccess registryAccess) {
+        Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+        StoneBlockBiomeSource biomeSource = new StoneBlockBiomeSource(biomeRegistry);
+        Holder<NoiseGeneratorSettings> settings = registryAccess.registryOrThrow(Registries.NOISE_SETTINGS)
+                .getHolderOrThrow(ResourceKey.create(Registries.NOISE_SETTINGS, new ResourceLocation("stoneblock", "stoneblock")));
+        // prebuilt structure is not used here; FTB Team Bases places the base itself
+        return new StoneblockChunkGenerator(biomeSource, settings, new ResourceLocation("stoneblock", "none"));
     }
 
     public int index;
