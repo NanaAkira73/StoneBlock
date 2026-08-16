@@ -6,6 +6,7 @@ import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
@@ -17,9 +18,11 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.chunk.CarvingMask;
@@ -87,6 +90,15 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
     @Override
     public int getSpawnHeight(LevelHeightAccessor level) {
         return 0;
+    }
+
+    @Override
+    public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> structureSetLookup,
+                                                     RandomState randomState, long seed) {
+        // 只生成 stoneblock_structure_set 标签中的结构集，阻止原版结构（矿坑、村庄等）生成
+        HolderSet<StructureSet> structures = structureSetLookup.getOrThrow(
+                TagKey.create(Registries.STRUCTURE_SET, STRUCTURE_SET_TAG));
+        return ChunkGeneratorStructureState.createForFlat(randomState, seed, this.biomeSource, structures.stream());
     }
 
     @Override
@@ -158,12 +170,6 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
     public void spawnOriginalMobs(WorldGenRegion region) {
     }
 
-    // 出生点空气口袋大小（在世界中心留出空间让玩家生成在基地内部）
-    // 基地结构是空心的，spawn_point 在 y=1~2，这个口袋确保实体生成有足够空间
-    private static final int SPAWN_POCKET_HALF = 3;   // 半边长 (x, z)，总共 7x7
-    private static final int SPAWN_POCKET_TOP = 4;     // 顶部 Y
-    private static final int SPAWN_POCKET_BOTTOM = -2;  // 底部 Y
-
     @Override
     @NotNull
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
@@ -185,15 +191,7 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
                 int az = cz + z;
                 StoneBlockDataKjs config = StoneBlockDataKjs.getConfig(ax, az);
                 for (int y = minY; y < height; y++) {
-                    // 在世界中心 (0, 0, 0) 周围创建空气口袋，确保玩家有地方生成
-                    // 在 FTB Team Bases 放置基地结构之前，这里提供临时的生成空间
-                    boolean inSpawnPocket = Math.abs(ax) <= SPAWN_POCKET_HALF
-                            && Math.abs(az) <= SPAWN_POCKET_HALF
-                            && y >= SPAWN_POCKET_BOTTOM
-                            && y <= SPAWN_POCKET_TOP;
-                    BlockState state = inSpawnPocket
-                            ? Blocks.AIR.defaultBlockState()
-                            : config.getState(ax, y, az);
+                    BlockState state = config.getState(ax, y, az);
                     chunkAccess.setBlockState(mutableBlockPos.set(x, y, z), state, false);
                     heightmap1.update(x, y, z, state);
                     heightmap2.update(x, y, z, state);
