@@ -25,7 +25,7 @@ public abstract class DynamicDimensionManagerImplMixin {
             ),
             remap = false
     )
-    private ChunkGenerator stoneblock$redirectMakeGenerator(ChunkGenerators instance, RegistryAccess registryAccess, ResourceLocation prebuiltStructureId) {
+    private static ChunkGenerator stoneblock$redirectMakeGenerator(ChunkGenerators instance, RegistryAccess registryAccess, ResourceLocation prebuiltStructureId) {
         return StoneBlockDataKjs.createChunkGenerator(registryAccess);
     }
 }
