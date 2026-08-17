@@ -181,7 +181,7 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
         Heightmap heightmap2 = chunkAccess.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
 
         int minY = chunkAccess.getMinBuildHeight();
-        int height = chunkAccess.getHeight();
+        int maxY = chunkAccess.getMaxBuildHeight();
         int cx = chunkAccess.getPos().getMinBlockX();
         int cz = chunkAccess.getPos().getMinBlockZ();
 
@@ -190,7 +190,7 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
                 int ax = cx + x;
                 int az = cz + z;
                 StoneBlockDataKjs config = StoneBlockDataKjs.getConfig(ax, az);
-                for (int y = minY; y < height; y++) {
+                for (int y = minY; y < maxY; y++) {
                     BlockState state = config.getState(ax, y, az);
                     chunkAccess.setBlockState(mutableBlockPos.set(x, y, z), state, false);
                     heightmap1.update(x, y, z, state);
