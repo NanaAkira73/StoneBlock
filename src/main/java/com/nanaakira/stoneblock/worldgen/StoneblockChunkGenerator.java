@@ -27,6 +27,8 @@ import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.chunk.CarvingMask;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -37,6 +39,8 @@ import java.util.concurrent.Executor;
  * Generates terrain based on KubeJS layer configuration instead of vanilla noise.
  */
 public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoneblockChunkGenerator.class);
+
     @SuppressWarnings("deprecation")
     public static final ResourceLocation STRUCTURE_SET_TAG = new ResourceLocation("stoneblock", "stoneblock_structure_set");
 
@@ -170,6 +174,8 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
     public void spawnOriginalMobs(WorldGenRegion region) {
     }
 
+    private boolean fillFromNoiseLogged = false;
+
     @Override
     @NotNull
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
@@ -184,6 +190,13 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
         int maxY = chunkAccess.getMaxBuildHeight();
         int cx = chunkAccess.getPos().getMinBlockX();
         int cz = chunkAccess.getPos().getMinBlockZ();
+
+        if (!fillFromNoiseLogged) {
+            fillFromNoiseLogged = true;
+            LOGGER.info("[StoneBlock] fillFromNoise first call: chunk=({},{}) minY={} maxY={} BIOMES={} totalDistance={} centerX={} centerZ={}",
+                    cx, cz, minY, maxY, StoneBlockDataKjs.BIOMES.size(), StoneBlockDataKjs.totalDistance,
+                    StoneBlockDataKjs.centerX, StoneBlockDataKjs.centerZ);
+        }
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {

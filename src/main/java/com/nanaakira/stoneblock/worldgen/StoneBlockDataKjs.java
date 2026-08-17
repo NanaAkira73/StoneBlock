@@ -36,7 +36,7 @@ public final class StoneBlockDataKjs {
     public static final Map<String, PrebuiltStructure> PREBUILT_STRUCTURES = new LinkedHashMap<>();
     public static final PositionalRandomFactory RANDOM_FACTORY = new LegacyRandomSource.LegacyPositionalRandomFactory(0L);
 
-    private static int totalDistance = 1;
+    public static int totalDistance = 1;
     public static ResourceLocation lobbyStructure = null;
     public static final int SIZE = 128;
     public static final int HEIGHT = SIZE * 2;
@@ -142,6 +142,8 @@ public final class StoneBlockDataKjs {
      * an independent stone ring world.
      */
     public static ChunkGenerator createChunkGenerator(RegistryAccess registryAccess) {
+        LOGGER.info("[StoneBlock] createChunkGenerator called: BIOMES={}, totalDistance={}, centerX={}, centerZ={}",
+                BIOMES.size(), totalDistance, centerX, centerZ);
         Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
         StoneBlockBiomeSource biomeSource = new StoneBlockBiomeSource(biomeRegistry);
         Holder<NoiseGeneratorSettings> settings = registryAccess.registryOrThrow(Registries.NOISE_SETTINGS)
