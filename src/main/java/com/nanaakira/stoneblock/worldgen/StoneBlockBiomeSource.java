@@ -27,6 +27,7 @@ public class StoneBlockBiomeSource extends BiomeSource {
 
     private final HolderSet<Biome> biomes;
     private final List<Holder<Biome>> biomeList;
+    private boolean loggedOnce = false;
 
     private StoneBlockBiomeSource(HolderSet<Biome> b) {
         this.biomes = b;
@@ -52,6 +53,13 @@ public class StoneBlockBiomeSource extends BiomeSource {
         int x = QuartPos.toBlock(qx);
         int z = QuartPos.toBlock(qz);
         StoneBlockDataKjs config = StoneBlockDataKjs.getConfig(x, z);
-        return biomeList.get(config.index);
+        Holder<Biome> biome = biomeList.get(config.index);
+        if (!loggedOnce) {
+            loggedOnce = true;
+            org.slf4j.LoggerFactory.getLogger(StoneBlockBiomeSource.class).info(
+                    "[StoneBlock] getNoiseBiome first: block=({},{}) config.index={} biomeList.size={} biome={}",
+                    x, z, config.index, biomeList.size(), biome);
+        }
+        return biome;
     }
 }
