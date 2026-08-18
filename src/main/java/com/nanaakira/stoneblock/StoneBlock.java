@@ -1,9 +1,12 @@
 package com.nanaakira.stoneblock;
 
+import com.nanaakira.stoneblock.client.spawner.BitsSpawnerRender;
+import com.nanaakira.stoneblock.content.ContentRegistry;
 import com.nanaakira.stoneblock.worldgen.WorldGenRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -29,6 +32,7 @@ public class StoneBlock
         modEventBus.addListener(this::commonSetup);
 
         WorldGenRegistry.REGISTERS.forEach(register -> register.register(modEventBus));
+        ContentRegistry.REGISTERS.forEach(register -> register.register(modEventBus));
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -61,6 +65,12 @@ public class StoneBlock
         {
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        }
+
+        @SubscribeEvent
+        public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event)
+        {
+            event.registerBlockEntityRenderer(ContentRegistry.BITS_SPAWNER_BLOCK_ENTITY.get(), BitsSpawnerRender::new);
         }
     }
 }

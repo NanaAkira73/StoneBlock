@@ -147,6 +147,9 @@ dependencies {
     // FTB Team Bases (compileOnly: only needed at compile time for the mixin target)
     compileOnly fg.deobf("curse.maven:ftb-team-bases-1197857:7880652")
 
+    // KubeJS (compileOnly: only needed at compile time for the SpawnerDataKjs integration)
+    compileOnly fg.deobf("curse.maven:kubejs-238086:8020595")
+
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
