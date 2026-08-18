@@ -224,7 +224,9 @@ public final class StoneBlockDataKjs {
     }
 
     public BlockState getState(int x, int y, int z) {
-        if (!debugMode && (y == -SIZE || y == SIZE - 1)) {
+        if (!debugMode && y == -SIZE) {
+            // 只保留底部基岩；去掉顶部基岩封顶，让 FTB Chunks 小地图能显示
+            // 地表的环形分层方块颜色（下界岩红、末地石黄等）。
             return Blocks.BEDROCK.defaultBlockState();
         } else if (debugMode && ((x >> 6) & 1) == (((z >> 6) & 1))) {
             return Blocks.AIR.defaultBlockState();
