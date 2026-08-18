@@ -174,6 +174,16 @@ public class StoneblockChunkGenerator extends NoiseBasedChunkGenerator {
     public void spawnOriginalMobs(WorldGenRegion region) {
     }
 
+    @Override
+    public CompletableFuture<ChunkAccess> createBiomes(Executor executor, RandomState randomState,
+                                                       Blender blender, StructureManager structureManager,
+                                                       ChunkAccess chunkAccess) {
+        // 手动填充生物群系数据。默认流程中 BIOMES 阶段没有走到 getNoiseBiome，
+        // 导致 FTB Chunks 小地图读不到任何 biome 信息（显示淡灰色）。
+        chunkAccess.fillBiomesFromNoise(this.biomeSource, randomState.sampler());
+        return CompletableFuture.completedFuture(chunkAccess);
+    }
+
     private boolean fillFromNoiseLogged = false;
 
     @Override
