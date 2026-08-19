@@ -41,11 +41,11 @@ public final class StoneBlockDataKjs {
     public static final int SIZE = 128;
     public static final int HEIGHT = SIZE * 2;
 
-    // 环形石头世界的圆心（方块坐标）。默认 (255, 255) 与 FTB Team Bases 的
-    // 共享基地维度区域中心对齐，让玩家选择的基地正好落在环形世界的几何中心。
+    // 环形石头世界的圆心（方块坐标）。默认 (0, 0) 与原版 FTB StoneBlock 3 对齐：
+    // 基地（由 ConstructionWorkerMixin 强制放在原点）、环形圆心、结构距离基准点三者一致。
     // 可通过 KubeJS 脚本在 startup 阶段修改（例如 StoneblockData.centerX = 0）。
-    public static int centerX = 255;
-    public static int centerZ = 255;
+    public static int centerX = 0;
+    public static int centerZ = 0;
 
     public static void reset() {
         PREBUILT_STRUCTURES.clear();

@@ -147,6 +147,9 @@ dependencies {
     // FTB Team Bases (compileOnly: only needed at compile time for the mixin target)
     compileOnly fg.deobf("curse.maven:ftb-team-bases-1197857:7880652")
 
+    // FTB Library (compileOnly: needed for the XZ type used by ConstructionWorkerMixin)
+    compileOnly fg.deobf("curse.maven:ftb-library-forge-404465:8226927")
+
     // KubeJS (compileOnly: only needed at compile time for the SpawnerDataKjs integration)
     compileOnly fg.deobf("curse.maven:kubejs-238086:8020595")
 
