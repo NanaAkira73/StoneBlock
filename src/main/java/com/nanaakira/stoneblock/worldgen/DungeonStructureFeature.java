@@ -53,7 +53,8 @@ public class DungeonStructureFeature extends Structure {
         int x = context.chunkPos().getMinBlockX();
         int z = context.chunkPos().getMinBlockZ();
 
-        double distance = circularDistance(BlockPos.ZERO, new Vec3i(x, 0, z));
+        // 距离基准点对齐环形石头世界/基地的中心（默认 255,255），而不是世界原点 (0,0)
+        double distance = circularDistance(new BlockPos(StoneBlockDataKjs.centerX, 0, StoneBlockDataKjs.centerZ), new Vec3i(x, 0, z));
 
         if (distance < minStructureDistance || distance > maxStructureDistance) {
             return Optional.empty();
