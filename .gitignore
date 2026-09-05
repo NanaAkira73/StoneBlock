@@ -24,3 +24,41 @@ run
 # Files from Forge MDK
 forge*changelog.txt
 libs/
+
+# === Secrets & Credentials (DO NOT COMMIT) ===
+# GitHub tokens & AI API keys blacklist (auto-generated)
+
+# Environment files (often contain keys)
+.env
+.env.*
+!.env.example
+
+# GitHub access tokens
+ghp_*
+gho_*
+ghu_*
+ghs_*
+ghr_*
+github_pat_*
+github_token
+.github_token
+
+# AI API keys (OpenAI / Anthropic / Google / Gemini / generic)
+sk-*
+AIza*
+api_key
+apikey
+api-key
+api_keys
+apikeys
+*_api_key
+*_apikey
+
+# Generic credential files
+token
+tokens
+*.token
+credentials
+credentials.*
+secrets
+secrets.*
