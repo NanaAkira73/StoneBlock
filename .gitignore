@@ -58,6 +58,7 @@ apikeys
 token
 tokens
 *.token
+*.key
 credentials
 credentials.*
 secrets
